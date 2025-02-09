@@ -80,13 +80,13 @@ with col1:
 with col2:
     st.subheader("🏠 أدخل تفاصيل المنزل")
     # Manual location input
-    st.subheader("📍 إدخال الموقع يدويًا")
-    manual_lat = st.number_input("أدخل خط العرض:", value=st.session_state['location_lat'], format="%.6f")
-    manual_lng = st.number_input("أدخل خط الطول:", value=st.session_state['location_lng'], format="%.6f")
-    if manual_lat and manual_lng:
-        st.session_state['location_lat'] = manual_lat
-        st.session_state['location_lng'] = manual_lng
-        st.write(f"الموقع المدخل يدويًا: {manual_lat:.4f}, {manual_lng:.4f}")
+   # st.subheader("📍 إدخال الموقع يدويًا")
+     # manual_lat = st.number_input("أدخل خط العرض:", value=st.session_state['location_lat'], format="%.6f")
+   # manual_lng = st.number_input("أدخل خط الطول:", value=st.session_state['location_lng'], format="%.6f")
+   # if manual_lat and manual_lng:
+        #st.session_state['location_lat'] = manual_lat
+        #st.session_state['location_lng'] = manual_lng
+        #st.write(f"الموقع المدخل يدويًا: {manual_lat:.4f}, {manual_lng:.4f}")
 
     # Create a form for house details
     with st.form("house_details_form"):
@@ -525,4 +525,4 @@ for i, img in enumerate(images, 1):
 
 # Footer
 st.markdown("---")
-st.markdown("تم الإنشاء مع ❤️ بواسطة أحمد ريان")
+
