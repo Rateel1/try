@@ -93,16 +93,16 @@ with col2:
         # Create uniform input fields
         col_a, col_b = st.columns(2)
         with col_a:
-            beds = st.slider("عدد غرف النوم 🛏️", 1, 10, 3)
-            livings = st.slider("عدد غرف المعيشة 🛋️", 1, 5, 1)
-            wc = st.slider(" عدد دورات المياه 🚽", 1, 5, 2)
-            area = st.number_input("المساحة (متر مربع) 📏", 50.0, 1000.0, 150.0)
+            beds = st.slider("عدد غرف النوم 🛏️", 3, 7, 3)
+            livings = st.slider("عدد غرف المعيشة 🛋️", 1, 7, 1)
+            wc = st.slider(" عدد دورات المياه 🚽", 2, 5, 2)
+            area = st.number_input("المساحة (متر مربع) 📏", 150.0, 12000.0, 150.0)
         with col_b:
             # Replace the existing street_width input with a selectbox
             street_width = st.selectbox("عرض الشارع (متر) 🛣️", [10, 12, 15, 18, 20, 25], index=2)  # Default to 20
 
 
-            age = st.number_input(" عمر العقار 🗓️", 0, 100, 5)
+            age = st.number_input(" عمر العقار 🗓️", 0, 36, 5)
             street_direction = st.selectbox(" نوع الواجهة 🧭", [
     " واجهة شمالية",
     " واجهة شرقية",
