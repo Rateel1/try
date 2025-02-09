@@ -25,10 +25,10 @@ def predict_price(new_record):
     return predicted_price[0]
 
 # Initialize session state for latitude and longitude
-if 'location_lat' not in st.session_state:
-    st.session_state['location_lat'] = 24.7136  # Default latitude
-if 'location_lng' not in st.session_state:
-    st.session_state['location_lng'] = 46.6753  # Default longitude
+#if 'location_lat' not in st.session_state:
+    #st.session_state['location_lat'] = 24.7136  # Default latitude
+#if 'location_lng' not in st.session_state:
+    #st.session_state['location_lng'] = 46.6753  # Default longitude
 
 # Streamlit app setup
 st.title("House Price Prediction Dashboard")
