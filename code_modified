@@ -56,15 +56,15 @@ with col1:
 # Column 2: First set of input fields
 with col2:
     # Input fields for user to provide data
-    beds = st.slider("Beds", 1, 10, 3)
-    livings = st.slider("Living Rooms", 1, 5, 1)
-    wc = st.slider("Bathrooms", 1, 5, 2)
-    area = st.number_input("Area (sq meters)", 50.0, 1000.0, 150.0)
+    beds = st.slider("Beds", 3, 7, 3)
+    livings = st.slider("Living Rooms", 1, 7, 1)
+    wc = st.slider("Bathrooms", 2, 5, 2)
+    area = st.number_input("Area (sq meters)", 150.0, 12000.0, 150.0)
     street_width = st.number_input("Street Width (meters)", 5.0, 50.0, 20.0)
 
 # Column 3: Second set of input fields starting from "age"
 with col3:
-    age = st.number_input("Age (years)", 0, 100, 5)
+    age = st.number_input("Age (years)", 0, 36, 5)
     street_direction = st.selectbox("Street Direction", [1, 2, 3, 4])
     ketchen = st.selectbox("Kitchen", [0, 1])
     furnished = st.selectbox("Furnished", [0, 1])
