@@ -334,30 +334,29 @@ for i, img in enumerate(images, 1):
 
 
 #########################
-# Upload CSV file
-uploaded_file = st.file_uploader("table2_2022", type=["csv"])
+import streamlit as st
+import pandas as pd
+import plotly.express as px
 
-if uploaded_file is not None:
-    # Read the uploaded CSV
-    df = pd.read_csv(uploaded_file)
+# Read CSV directly from Streamlit folder
+file_path = "data/table2_2022.csv"  # Adjust the path based on your project structure
+df = pd.read_csv(file_path, encoding="utf-8")  # Try "latin1" if UTF-8 fails
 
-    # Ensure column names are correct
-    st.write("عدد الصفقات 2022", df.head())
+# Display DataFrame preview
+st.write("عدد الصفقات 2022", df.head())
 
-    # Create an interactive bar chart
-    fig = px.bar(
-        df,
-        x=df.columns[0],  # Replace with correct column name if needed
-        y=df.columns[1],  # Replace with correct column name if needed
-        title="Real Estate Transactions (2022)",
-        labels={"x": "الحي", "y": " عدد الصفقات"},
-        text_auto=True
-    )
+# Create interactive Plotly bar chart
+fig = px.bar(
+    df,
+    x=df.columns[0],  
+    y=df.columns[1],  
+    title="Real Estate Transactions (2022)",
+    labels={"x": "الحي", "y": "عدد الصفقات"},
+    text_auto=True
+)
 
-    # Show chart in Streamlit
-    st.plotly_chart(fig, use_container_width=True)
-
-
+# Show chart in Streamlit
+st.plotly_chart(fig, use_container_width=True)
 
 
 
