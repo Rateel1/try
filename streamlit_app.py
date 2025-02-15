@@ -335,7 +335,7 @@ for i, img in enumerate(images, 1):
 
 #########################
 # Upload CSV file
-uploaded_file = st.file_uploader("table2022", type=["csv"])
+uploaded_file = st.file_uploader("table2_2022", type=["csv"])
 
 if uploaded_file is not None:
     # Read the uploaded CSV
