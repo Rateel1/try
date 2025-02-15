@@ -334,9 +334,7 @@ for i, img in enumerate(images, 1):
 
 
 #########################
-import streamlit as st
-import pandas as pd
-import plotly.express as px
+
 
 # Read CSV directly from Streamlit folder
 file_path = "data/table2_2022.csv"  # Adjust the path based on your project structure
