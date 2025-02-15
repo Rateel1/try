@@ -337,7 +337,7 @@ for i, img in enumerate(images, 1):
 
 
 # Read CSV directly from Streamlit folder
-file_path = "data/table2_2022.csv"  # Adjust the path based on your project structure
+file_path = "table2_2022.csv"  # Adjust the path based on your project structure
 df = pd.read_csv(file_path, encoding="utf-8")  # Try "latin1" if UTF-8 fails
 
 # Display DataFrame preview
