@@ -337,15 +337,13 @@ for i, img in enumerate(images, 1):
 file_path = "selected2022_a.csv"  # Adjust the path based on your project structure
 df = pd.read_csv(file_path, encoding="utf-8")  # Try "latin1" if UTF-8 fails
 
-# Display DataFrame preview
-st.write("عدد الصفقات2022", df.head())
-
 # Create interactive Plotly bar chart
 fig = px.bar(
     df,
     x=df.columns[0],  
     y=df.columns[1],  
-    title="Real Estate Transactions (2022)",
+    title="(عدد الصفقات لعام 2022)",
+
     labels={"x": "الحي", "y": "عدد الصفقات"},
     text_auto=True
 )
@@ -356,15 +354,12 @@ st.plotly_chart(fig, use_container_width=True)
 file_path = "selected2023_a.csv"  # Adjust the path based on your project structure
 df = pd.read_csv(file_path, encoding="utf-8")  # Try "latin1" if UTF-8 fails
 
-# Display DataFrame preview
-st.write("عدد الصفقات 2023", df.head())
-
 # Create interactive Plotly bar chart
 fig = px.bar(
     df,
     x=df.columns[0],  
     y=df.columns[1],  
-    title="Real Estate Transactions (2022)",
+    title="(عدد الصفقات لعام 2023)",
     labels={"x": "الحي", "y": "عدد الصفقات"},
     text_auto=True
 )
@@ -376,15 +371,12 @@ st.plotly_chart(fig, use_container_width=True)
 file_path = "selected2024_a.csv"  # Adjust the path based on your project structure
 df = pd.read_csv(file_path, encoding="utf-8")  # Try "latin1" if UTF-8 fails
 
-# Display DataFrame preview
-st.write("عدد الصفقات 2024", df.head())
-
 # Create interactive Plotly bar chart
 fig = px.bar(
     df,
     x=df.columns[0],  
     y=df.columns[1],  
-    title="Real Estate Transactions (2022)",
+    title="(عدد الصفقات لعام 2024)",
     labels={"x": "الحي", "y": "عدد الصفقات"},
     text_auto=True
 )
@@ -396,4 +388,3 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Footer
 st.markdown("---")
-
