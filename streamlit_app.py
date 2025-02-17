@@ -342,7 +342,7 @@ fig = px.bar(
     df,
     x=df.columns[0],  
     y=df.columns[1],  
-    title="(عدد الصفقات لعام 2022)",
+    title="عدد الصفقات لعام 2022",
 
     labels={"x": "الحي", "y": "عدد الصفقات"},
     text_auto=True
@@ -359,7 +359,7 @@ fig = px.bar(
     df,
     x=df.columns[0],  
     y=df.columns[1],  
-    title="(عدد الصفقات لعام 2023)",
+    title="عدد الصفقات لعام 2023",
     labels={"x": "الحي", "y": "عدد الصفقات"},
     text_auto=True
 )
@@ -376,7 +376,7 @@ fig = px.bar(
     df,
     x=df.columns[0],  
     y=df.columns[1],  
-    title="(عدد الصفقات لعام 2024)",
+    title="عدد الصفقات لعام 2024",
     labels={"x": "الحي", "y": "عدد الصفقات"},
     text_auto=True
 )
