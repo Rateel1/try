@@ -338,7 +338,7 @@ DEALS_FILES = {
     "2023": "selected2023_a.csv",
     "2024": "selected2024_a.csv"
 }
-TOTAL_COST_FILE = "deals total.csv"
+TOTAL_COST_FILE = "deals_total.csv"
 
 # Function to load "Number of Deals" data from CSV files
 @st.cache_data
