@@ -327,44 +327,50 @@ with col2:
 
 # Bottom section: Visualization
 st.header("📊 رؤى")
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
 
-# Define file paths (update these to match actual stored locations)
+# File paths for CSV files
 DEALS_FILES = {
     "2022": "selected2022_a.csv",
     "2023": "selected2023_a.csv",
     "2024": "selected2024_a.csv"
 }
-TOTAL_COST_FILE = "deals total.csv"
+TOTAL_COST_FILE = "deals_total.csv"
 
-st.write("Current working directory:", os.getcwd())
-
-# Check if the CSV files exist in the working directory
-st.write("Files in current directory:", os.listdir(os.getcwd()))
-
-# Function to load "Number of Deals" data from preloaded files
+# Function to load "Number of Deals" data from CSV files
 @st.cache_data
 def load_deals_data():
     dataframes = []
     
     for year, file in DEALS_FILES.items():
-        if os.path.exists(file):  # Ensure the file exists
-            df = pd.read_excel(file)
-            df["Year"] = int(year)  # Add Year column
-            dataframes.append(df)
+        if os.path.exists(file):  # ✅ Ensure file exists before reading
+            try:
+                df = pd.read_csv(file)  # ✅ Correct CSV reading
+                df["Year"] = int(year)  # ✅ Add Year column
+                dataframes.append(df)
+            except Exception as e:
+                st.error(f"⚠️ Error reading {file}: {e}")  # ✅ Show detailed error
+            
+        else:
+            st.warning(f"⚠️ Missing file: {file}")  # ✅ Warn about missing files
     
     return pd.concat(dataframes, ignore_index=True) if dataframes else None
 
-# Function to load "Total Cost of Deals" from a preloaded file
+# Function to load "Total Cost of Deals" CSV
 @st.cache_data
 def load_total_cost_data():
     if os.path.exists(TOTAL_COST_FILE):
-        return pd.read_excel(TOTAL_COST_FILE)
-    return None
+        try:
+            return pd.read_csv(TOTAL_COST_FILE)  # ✅ Read CSV correctly
+        except Exception as e:
+            st.error(f"⚠️ Error reading {TOTAL_COST_FILE}: {e}")
+            return None
+    else:
+        st.warning(f"⚠️ Missing file: {TOTAL_COST_FILE}")
+        return None
 
 # Load Data
 df_deals = load_deals_data()
@@ -415,6 +421,8 @@ if df_deals is not None and df_cost is not None:
 
 else:
     st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
+
+
 
 
 # Footer
