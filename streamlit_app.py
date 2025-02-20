@@ -341,6 +341,11 @@ DEALS_FILES = {
 }
 TOTAL_COST_FILE = "deals total.csv"
 
+st.write("Current working directory:", os.getcwd())
+
+# Check if the CSV files exist in the working directory
+st.write("Files in current directory:", os.listdir(os.getcwd()))
+
 # Function to load "Number of Deals" data from preloaded files
 @st.cache_data
 def load_deals_data():
