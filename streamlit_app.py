@@ -327,63 +327,89 @@ with col2:
 
 # Bottom section: Visualization
 st.header("📊 رؤى")
-images = ["chart1.png", "chart2.png"]
-for i, img in enumerate(images, 1):
-    image = Image.open(img)
-    st.image(image, caption=f"الرسم البياني {i}", use_column_width=True)
 
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import os
 
-#########################
-file_path = "selected2022_a.csv"  # Adjust the path based on your project structure
-df = pd.read_csv(file_path, encoding="utf-8")  # Try "latin1" if UTF-8 fails
+# Define file paths (update these to match actual stored locations)
+DEALS_FILES = {
+    "2022": "selected2022_a.csv",
+    "2023": "selected2023_a.csv",
+    "2024": "selected2024_a.csv"
+}
+TOTAL_COST_FILE = "deals total.csv"
 
-# Create interactive Plotly bar chart
-fig = px.bar(
-    df,
-    x=df.columns[0],  
-    y=df.columns[1],  
-    title="عدد الصفقات لعام 2022",
+# Function to load "Number of Deals" data from preloaded files
+@st.cache_data
+def load_deals_data():
+    dataframes = []
+    
+    for year, file in DEALS_FILES.items():
+        if os.path.exists(file):  # Ensure the file exists
+            df = pd.read_excel(file)
+            df["Year"] = int(year)  # Add Year column
+            dataframes.append(df)
+    
+    return pd.concat(dataframes, ignore_index=True) if dataframes else None
 
-    labels={"x": "الحي", "y": "عدد الصفقات"},
-    text_auto=True
-)
+# Function to load "Total Cost of Deals" from a preloaded file
+@st.cache_data
+def load_total_cost_data():
+    if os.path.exists(TOTAL_COST_FILE):
+        return pd.read_excel(TOTAL_COST_FILE)
+    return None
 
-# Show chart in Streamlit
-st.plotly_chart(fig, use_container_width=True)
-############################################################
-file_path = "selected2023_a.csv"  # Adjust the path based on your project structure
-df = pd.read_csv(file_path, encoding="utf-8")  # Try "latin1" if UTF-8 fails
+# Load Data
+df_deals = load_deals_data()
+df_cost = load_total_cost_data()
 
-# Create interactive Plotly bar chart
-fig = px.bar(
-    df,
-    x=df.columns[0],  
-    y=df.columns[1],  
-    title="عدد الصفقات لعام 2023",
-    labels={"x": "الحي", "y": "عدد الصفقات"},
-    text_auto=True
-)
+if df_deals is not None and df_cost is not None:
+    st.title("🏡 Real Estate Market Dashboard")
 
-# Show chart in Streamlit
-st.plotly_chart(fig, use_container_width=True)
+    # Sidebar Filter for Year Selection
+    selected_year = st.sidebar.selectbox("📅 Select Year", ["All"] + sorted(df_deals["Year"].unique()))
 
-# Read CSV directly from Streamlit folder
-file_path = "selected2024_a.csv"  # Adjust the path based on your project structure
-df = pd.read_csv(file_path, encoding="utf-8")  # Try "latin1" if UTF-8 fails
+    # Filter Data Based on Selected Year
+    if selected_year != "All":
+        df_deals_filtered = df_deals[df_deals["Year"] == int(selected_year)]
+        df_cost_filtered = df_cost[df_cost["Year"] == int(selected_year)]
+    else:
+        df_deals_filtered = df_deals
+        df_cost_filtered = df_cost
 
-# Create interactive Plotly bar chart
-fig = px.bar(
-    df,
-    x=df.columns[0],  
-    y=df.columns[1],  
-    title="عدد الصفقات لعام 2024",
-    labels={"x": "الحي", "y": "عدد الصفقات"},
-    text_auto=True
-)
+    # --- 📊 Number of Deals per District ---
+    st.subheader("📊 Number of Deals per District")
+    
+    deals_per_district = df_deals_filtered.groupby(["District", "Year"])["Deal Count"].sum().reset_index()
+    
+    fig_deals = px.bar(
+        deals_per_district, x="District", y="Deal Count", color="Year",
+        barmode="group", title="Number of Deals per District per Year"
+    )
+    st.plotly_chart(fig_deals)
 
-# Show chart in Streamlit
-st.plotly_chart(fig, use_container_width=True)
+    # --- 💰 Total Cost of Deals per District ---
+    st.subheader("💰 Total Cost of Deals per District")
+    
+    cost_per_district = df_cost_filtered.groupby(["District", "Year"])["Total Cost"].sum().reset_index()
+    
+    fig_cost = px.bar(
+        cost_per_district, x="District", y="Total Cost", color="Year",
+        barmode="stack", title="Total Cost of Deals per District per Year"
+    )
+    st.plotly_chart(fig_cost)
 
+    # --- 📋 Data Table for Detailed View ---
+    st.subheader("📋 Detailed Deals Data")
+    st.dataframe(df_deals_filtered)
+
+    st.subheader("📋 Total Cost Data")
+    st.dataframe(df_cost_filtered)
+
+else:
+    st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
 
 
 # Footer
