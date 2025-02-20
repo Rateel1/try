@@ -332,7 +332,6 @@ import pandas as pd
 import plotly.express as px
 import os
 
-
 # File paths for CSV files
 DEALS_FILES = {
     "2022": "selected2022_a.csv",
@@ -342,65 +341,23 @@ DEALS_FILES = {
 TOTAL_COST_FILE = "deals_total.csv"
 
 
-
-# Load CSV file (make sure it's named correctly and in the right directory)
-df_cost = pd.read_csv("deals_total.csv")
-
-# Reshape the data: Convert wide format (years as columns) into long format
-df_cost = df_cost.melt(id_vars=["Unnamed: 0"], var_name="Year", value_name="Total Cost")
-
-# Rename the district column properly
-df_cost.rename(columns={"Unnamed: 0": "District"}, inplace=True)
-
-# Convert Year to numeric
-df_cost["Year"] = df_cost["Year"].astype(int)
-
-# Display to check
-print(df_cost.head())
-
-###########################################################################
-# Load and transform "Total Cost of Deals" CSV
-@st.cache_data
-def load_total_cost_data():
-    if os.path.exists("deals_total.csv"):
-        try:
-            df = pd.read_csv("deals_total.csv")
-            df = df.melt(id_vars=["Unnamed: 0"], var_name="Year", value_name="Total Cost")
-            df.rename(columns={"Unnamed: 0": "District"}, inplace=True)
-            df["Year"] = df["Year"].astype(int)
-            return df
-        except Exception as e:
-            st.error(f"⚠️ Error reading deals_total.csv: {e}")
-            return None
-    else:
-        st.warning(f"⚠️ Missing file: deals_total.csv")
-        return None
-##########################################################################
-# Function to load "Number of Deals" data from CSV files
-@st.cache_data
-def load_deals_data():
-    dataframes = []
-    
-    for year, file in DEALS_FILES.items():
-        if os.path.exists(file):  # ✅ Ensure file exists before reading
-            try:
-                df = pd.read_csv(file)  # ✅ Correct CSV reading
-                df["Year"] = int(year)  # ✅ Add Year column
-                dataframes.append(df)
-            except Exception as e:
-                st.error(f"⚠️ Error reading {file}: {e}")  # ✅ Show detailed error
-            
-        else:
-            st.warning(f"⚠️ Missing file: {file}")  # ✅ Warn about missing files
-    
-    return pd.concat(dataframes, ignore_index=True) if dataframes else None
-
-# Function to load "Total Cost of Deals" CSV
+# ✅ Load & Transform "Total Cost of Deals" CSV
 @st.cache_data
 def load_total_cost_data():
     if os.path.exists(TOTAL_COST_FILE):
         try:
-            return pd.read_csv(TOTAL_COST_FILE)  # ✅ Read CSV correctly
+            df = pd.read_csv(TOTAL_COST_FILE)
+
+            # ✅ Auto-detect first column name if missing
+            first_col = df.columns[0]
+            df = df.melt(id_vars=[first_col], var_name="Year", value_name="Total Cost")
+
+            # ✅ Rename first column to "District"
+            df.rename(columns={first_col: "District"}, inplace=True)
+
+            # ✅ Convert Year to integer
+            df["Year"] = df["Year"].astype(int)
+            return df
         except Exception as e:
             st.error(f"⚠️ Error reading {TOTAL_COST_FILE}: {e}")
             return None
@@ -408,17 +365,37 @@ def load_total_cost_data():
         st.warning(f"⚠️ Missing file: {TOTAL_COST_FILE}")
         return None
 
-# Load Data
+
+# ✅ Load & Transform "Number of Deals" Data from Multiple CSV Files
+@st.cache_data
+def load_deals_data():
+    dataframes = []
+
+    for year, file in DEALS_FILES.items():
+        if os.path.exists(file):  # ✅ Ensure file exists before reading
+            try:
+                df = pd.read_csv(file)  # ✅ Read CSV correctly
+                df["Year"] = int(year)  # ✅ Add Year column
+                dataframes.append(df)
+            except Exception as e:
+                st.error(f"⚠️ Error reading {file}: {e}")  # ✅ Show detailed error
+        else:
+            st.warning(f"⚠️ Missing file: {file}")  # ✅ Warn about missing files
+
+    return pd.concat(dataframes, ignore_index=True) if dataframes else None
+
+
+# ✅ Load Data
 df_deals = load_deals_data()
 df_cost = load_total_cost_data()
 
 if df_deals is not None and df_cost is not None:
     st.title("🏡 Real Estate Market Dashboard")
 
-    # Sidebar Filter for Year Selection
+    # ✅ Sidebar Filter for Year Selection
     selected_year = st.sidebar.selectbox("📅 Select Year", ["All"] + sorted(df_deals["Year"].unique()))
 
-    # Filter Data Based on Selected Year
+    # ✅ Filter Data Based on Selected Year
     if selected_year != "All":
         df_deals_filtered = df_deals[df_deals["Year"] == int(selected_year)]
         df_cost_filtered = df_cost[df_cost["Year"] == int(selected_year)]
@@ -428,9 +405,8 @@ if df_deals is not None and df_cost is not None:
 
     # --- 📊 Number of Deals per District ---
     st.subheader("📊 Number of Deals per District")
-    
     deals_per_district = df_deals_filtered.groupby(["District", "Year"])["Deal Count"].sum().reset_index()
-    
+
     fig_deals = px.bar(
         deals_per_district, x="District", y="Deal Count", color="Year",
         barmode="group", title="Number of Deals per District per Year"
@@ -439,9 +415,8 @@ if df_deals is not None and df_cost is not None:
 
     # --- 💰 Total Cost of Deals per District ---
     st.subheader("💰 Total Cost of Deals per District")
-    
     cost_per_district = df_cost_filtered.groupby(["District", "Year"])["Total Cost"].sum().reset_index()
-    
+
     fig_cost = px.bar(
         cost_per_district, x="District", y="Total Cost", color="Year",
         barmode="stack", title="Total Cost of Deals per District per Year"
@@ -457,8 +432,6 @@ if df_deals is not None and df_cost is not None:
 
 else:
     st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
-
-
 
 
 # Footer
