@@ -403,7 +403,17 @@ if df_deals is not None and df_cost is not None:
         df_deals_filtered = df_deals
         df_cost_filtered = df_cost
 
+    
+    
     # --- 📊 Number of Deals per District ---
+    # Debug: Print the actual column names in df_deals_filtered
+st.write("📌 Columns in df_deals:", df_deals.columns.tolist())
+st.write("📌 Columns in df_deals_filtered:", df_deals_filtered.columns.tolist())
+
+# Debug: Print first few rows to verify the data
+st.write("🔍 First rows of df_deals_filtered:")
+st.dataframe(df_deals_filtered.head())
+
     st.subheader("📊 Number of Deals per District")
     deals_per_district = df_deals_filtered.groupby(["District", "Year"])["Deal Count"].sum().reset_index()
 
