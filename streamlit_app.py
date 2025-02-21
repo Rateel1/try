@@ -403,7 +403,8 @@ if df_deals is not None and df_cost is not None:
     
     fig_deals = px.bar(
         deals_per_district, x="District", y="Deal Count", color="Year",
-        barmode="group", title="Number of Deals per District per Year"
+        barmode="group", title="Number of Deals per District per Year",
+        category_orders={"District": deals_per_district["District"].tolist()}  # Ensures sorting is reflected in plot
     )
     st.plotly_chart(fig_deals)
 
@@ -417,7 +418,8 @@ if df_deals is not None and df_cost is not None:
     
     fig_cost = px.bar(
         cost_per_district, x="District", y="Total Cost", color="Year",
-        barmode="stack", title="Total Cost of Deals per District per Year"
+        barmode="stack", title="Total Cost of Deals per District per Year",
+        category_orders={"District": cost_per_district["District"].tolist()}  # Ensures sorting is reflected in plot
     )
     st.plotly_chart(fig_cost)
 
@@ -430,7 +432,6 @@ if df_deals is not None and df_cost is not None:
 
 else:
     st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
-
 
 # Footer
 st.markdown("---")
