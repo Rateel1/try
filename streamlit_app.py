@@ -340,22 +340,15 @@ DEALS_FILES = {
 }
 TOTAL_COST_FILE = "deals_total.csv"
 
-
 # ✅ Load & Transform "Total Cost of Deals" CSV
 @st.cache_data
 def load_total_cost_data():
     if os.path.exists(TOTAL_COST_FILE):
         try:
             df = pd.read_csv(TOTAL_COST_FILE)
-
-            # ✅ Auto-detect first column name if missing
             first_col = df.columns[0]
             df = df.melt(id_vars=[first_col], var_name="Year", value_name="Total Cost")
-
-            # ✅ Rename first column to "District"
             df.rename(columns={first_col: "District"}, inplace=True)
-
-            # ✅ Convert Year to integer
             df["Year"] = df["Year"].astype(int)
             return df
         except Exception as e:
@@ -365,25 +358,21 @@ def load_total_cost_data():
         st.warning(f"⚠️ Missing file: {TOTAL_COST_FILE}")
         return None
 
-
 # ✅ Load & Transform "Number of Deals" Data from Multiple CSV Files
 @st.cache_data
 def load_deals_data():
     dataframes = []
-
     for year, file in DEALS_FILES.items():
-        if os.path.exists(file):  # ✅ Ensure file exists before reading
+        if os.path.exists(file):
             try:
-                df = pd.read_csv(file)  # ✅ Read CSV correctly
-                df["Year"] = int(year)  # ✅ Add Year column
+                df = pd.read_csv(file)
+                df["Year"] = int(year)
                 dataframes.append(df)
             except Exception as e:
-                st.error(f"⚠️ Error reading {file}: {e}")  # ✅ Show detailed error
+                st.error(f"⚠️ Error reading {file}: {e}")
         else:
-            st.warning(f"⚠️ Missing file: {file}")  # ✅ Warn about missing files
-
+            st.warning(f"⚠️ Missing file: {file}")
     return pd.concat(dataframes, ignore_index=True) if dataframes else None
-
 
 # ✅ Load Data
 df_deals = load_deals_data()
@@ -392,8 +381,9 @@ df_cost = load_total_cost_data()
 if df_deals is not None and df_cost is not None:
     st.title("🏡 Real Estate Market Dashboard")
 
-    # ✅ Sidebar Filter for Year Selection
+    # ✅ Sidebar Filters
     selected_year = st.sidebar.selectbox("📅 Select Year", ["All"] + sorted(df_deals["Year"].unique()))
+    sort_by = st.sidebar.radio("📊 Sort By", ["Deal Count", "Total Cost"])
 
     # ✅ Filter Data Based on Selected Year
     if selected_year != "All":
@@ -403,20 +393,14 @@ if df_deals is not None and df_cost is not None:
         df_deals_filtered = df_deals
         df_cost_filtered = df_cost
 
-    
-    
     # --- 📊 Number of Deals per District ---
-    # Debug: Print the actual column names in df_deals_filtered
-    st.write("📌 Columns in df_deals:", df_deals.columns.tolist())
-    st.write("📌 Columns in df_deals_filtered:", df_deals_filtered.columns.tolist())
-
-    # Debug: Print first few rows to verify the data
-    st.write("🔍 First rows of df_deals_filtered:")
-    st.dataframe(df_deals_filtered.head())
-
     st.subheader("📊 Number of Deals per District")
     deals_per_district = df_deals_filtered.groupby(["District", "Year"])["Deal Count"].sum().reset_index()
-
+    
+    # ✅ Sort based on selection
+    if sort_by == "Deal Count":
+        deals_per_district = deals_per_district.sort_values(by="Deal Count", ascending=False)
+    
     fig_deals = px.bar(
         deals_per_district, x="District", y="Deal Count", color="Year",
         barmode="group", title="Number of Deals per District per Year"
@@ -426,14 +410,18 @@ if df_deals is not None and df_cost is not None:
     # --- 💰 Total Cost of Deals per District ---
     st.subheader("💰 Total Cost of Deals per District")
     cost_per_district = df_cost_filtered.groupby(["District", "Year"])["Total Cost"].sum().reset_index()
-
+    
+    # ✅ Sort based on selection
+    if sort_by == "Total Cost":
+        cost_per_district = cost_per_district.sort_values(by="Total Cost", ascending=False)
+    
     fig_cost = px.bar(
         cost_per_district, x="District", y="Total Cost", color="Year",
         barmode="stack", title="Total Cost of Deals per District per Year"
     )
     st.plotly_chart(fig_cost)
 
-    # --- 📋 Data Table for Detailed View ---
+    # --- 📋 Data Tables ---
     st.subheader("📋 Detailed Deals Data")
     st.dataframe(df_deals_filtered)
 
