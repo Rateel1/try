@@ -408,7 +408,7 @@ if df_deals is not None and df_cost is not None:
         barmode="group", title="Number of Deals per District per Year",
         category_orders={"District": deals_per_district["District"].tolist()},  # Ensures sorting is reflected in plot
     )
-    fig_deals.update_layout(yaxis=dict(tickmode='array', tickvals=[2022, 2023, 2024]))  # ✅ Only show 2022, 2023, 2024
+    fig_deals.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_deals)
 
     # --- 💰 Total Cost of Deals per District ---
@@ -424,7 +424,7 @@ if df_deals is not None and df_cost is not None:
         barmode="stack", title="Total Cost of Deals per District per Year",
         category_orders={"District": cost_per_district["District"].tolist()},  # Ensures sorting is reflected in plot
     )
-    fig_cost.update_layout(yaxis=dict(tickmode='array', tickvals=[2022, 2023, 2024]))  # ✅ Only show 2022, 2023, 2024
+    fig_cost.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_cost)
 
     # --- 📋 Data Tables ---
