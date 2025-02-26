@@ -399,13 +399,13 @@ if df_deals is not None and df_cost is not None:
     st.subheader("📊 Number of Deals per District")
     deals_per_district = df_deals_filtered.groupby(["District", "Year"])["Deal Count"].sum().reset_index()
     
-    # ✅ Sort districts by Deal Count
-    deals_per_district = deals_per_district.sort_values(by="Deal Count", ascending=False)
+    # ✅ Sort districts by Deal Count in descending order
+    deals_per_district = deals_per_district.sort_values(by="Deal Count", ascending=True)
     
     fig_deals = px.bar(
         deals_per_district, x="District", y="Deal Count", color="Year",
         barmode="group", title="Number of Deals per District per Year",
-        category_orders={"District": deals_per_district["District"].tolist()},  # Sorting reflected in plot
+        category_orders={"District": deals_per_district["District"].tolist()[::-1]},  # Sorting reflected in plot (descending)
     )
     fig_deals.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_deals)
@@ -414,13 +414,13 @@ if df_deals is not None and df_cost is not None:
     st.subheader("💰 Total Cost of Deals per District")
     cost_per_district = df_cost_filtered.groupby(["District", "Year"])["Total Cost"].sum().reset_index()
     
-    # ✅ Sort districts by Total Cost
-    cost_per_district = cost_per_district.sort_values(by="Total Cost", ascending=False)
+    # ✅ Sort districts by Total Cost in descending order
+    cost_per_district = cost_per_district.sort_values(by="Total Cost", ascending=True)
     
     fig_cost = px.bar(
         cost_per_district, x="District", y="Total Cost", color="Year",
         barmode="stack", title="Total Cost of Deals per District per Year",
-        category_orders={"District": cost_per_district["District"].tolist()},  # Sorting reflected in plot
+        category_orders={"District": cost_per_district["District"].tolist()[::-1]},  # Sorting reflected in plot (descending)
     )
     fig_cost.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_cost)
