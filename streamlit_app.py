@@ -349,11 +349,7 @@ def load_total_cost_data():
             first_col = df.columns[0]
             df = df.melt(id_vars=[first_col], var_name="Year", value_name="Total Cost")
             df.rename(columns={first_col: "District"}, inplace=True)
-            
-            # Ensure the Year column is integer and filter valid years
-            df["Year"] = pd.to_numeric(df["Year"], errors='coerce').astype("Int64")
-            df = df[df["Year"].isin([2022, 2023, 2024])]
-            
+            df["Year"] = df["Year"].astype(int)
             return df
         except Exception as e:
             st.error(f"⚠️ Error reading {TOTAL_COST_FILE}: {e}")
@@ -370,25 +366,13 @@ def load_deals_data():
         if os.path.exists(file):
             try:
                 df = pd.read_csv(file)
-                
-                # Ensure Year is an integer and filter out unwanted values
                 df["Year"] = int(year)
-                
                 dataframes.append(df)
             except Exception as e:
                 st.error(f"⚠️ Error reading {file}: {e}")
         else:
             st.warning(f"⚠️ Missing file: {file}")
-    
-    # Combine all dataframes
-    df_combined = pd.concat(dataframes, ignore_index=True) if dataframes else None
-    
-    # Ensure Year column is integer and filter only the valid years
-    if df_combined is not None:
-        df_combined["Year"] = df_combined["Year"].astype(int)
-        df_combined = df_combined[df_combined["Year"].isin([2022, 2023, 2024])]
-    
-    return df_combined
+    return pd.concat(dataframes, ignore_index=True) if dataframes else None
 
 # ✅ Load Data
 df_deals = load_deals_data()
@@ -397,9 +381,10 @@ df_cost = load_total_cost_data()
 if df_deals is not None and df_cost is not None:
     st.title("🏡 Real Estate Market Dashboard")
 
+   
     # ✅ Sidebar Filters
-    valid_years = ["All"] + sorted(df_deals["Year"].unique())
-    selected_year = st.sidebar.selectbox("📅 Select Year", valid_years)
+    valid_years = [year for year in sorted(df_deals["Year"].unique()) if year in [2022, 2023, 2024]]
+    selected_year = st.sidebar.selectbox("📅 Select Year", ["All"] + valid_years)
     sort_by = st.sidebar.radio("📊 Sort By", ["Deal Count", "Total Cost"])
 
     # ✅ Filter Data Based on Selected Year
@@ -421,8 +406,9 @@ if df_deals is not None and df_cost is not None:
     fig_deals = px.bar(
         deals_per_district, x="District", y="Deal Count", color="Year",
         barmode="group", title="Number of Deals per District per Year",
-        category_orders={"District": deals_per_district["District"].tolist()}  # Ensures sorting is reflected in plot
+        category_orders={"District": deals_per_district["District"].tolist()},  # Ensures sorting is reflected in plot
     )
+    fig_deals.update_layout(yaxis=dict(tickmode='array', tickvals=[2022, 2023, 2024]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_deals)
 
     # --- 💰 Total Cost of Deals per District ---
@@ -436,8 +422,9 @@ if df_deals is not None and df_cost is not None:
     fig_cost = px.bar(
         cost_per_district, x="District", y="Total Cost", color="Year",
         barmode="stack", title="Total Cost of Deals per District per Year",
-        category_orders={"District": cost_per_district["District"].tolist()}  # Ensures sorting is reflected in plot
+        category_orders={"District": cost_per_district["District"].tolist()},  # Ensures sorting is reflected in plot
     )
+    fig_cost.update_layout(yaxis=dict(tickmode='array', tickvals=[2022, 2023, 2024]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_cost)
 
     # --- 📋 Data Tables ---
