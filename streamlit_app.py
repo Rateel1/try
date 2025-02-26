@@ -62,11 +62,11 @@ st.title("🏠  لوحة المعلومات العقارية  ")
 # Create layout for the dashboard
 col1, col2 = st.columns(2)
 # Column 1: Map and Location Selection
-    with col1:
-        st.subheader("📍 اختر الموقع")
+ with col1:
+    st.subheader("📍 اختر الموقع")
         
-        # Set default location to Riyadh, Saudi Arabia
-        riyadh_lat, riyadh_lng = 24.7136, 46.6753
+     # Set default location to Riyadh, Saudi Arabia
+     riyadh_lat, riyadh_lng = 24.7136, 46.6753
      if 'location_lat' not in st.session_state:
           st.session_state['location_lat'] = riyadh_lat
      if 'location_lng' not in st.session_state:
