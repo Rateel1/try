@@ -397,30 +397,30 @@ if df_deals is not None and df_cost is not None:
 
     # --- 📊 Number of Deals per District ---
     st.subheader("📊 Number of Deals per District")
-    deals_per_district = df_deals_filtered.groupby(["District", "Year"])["Deal Count"].sum().reset_index()
+    deals_per_district = df_deals_filtered.groupby(["District"])["Deal Count"].sum().reset_index()
     
-    # ✅ Sort districts by Deal Count in descending order
-    deals_per_district = deals_per_district.sort_values(by="Deal Count", ascending=True)
+    # ✅ Sort districts by total Deal Count in descending order
+    deals_per_district = deals_per_district.sort_values(by="Deal Count", ascending=False)
     
     fig_deals = px.bar(
-        deals_per_district, x="District", y="Deal Count", color="Year",
+        df_deals_filtered, x="District", y="Deal Count", color="Year",
         barmode="group", title="Number of Deals per District per Year",
-        category_orders={"District": deals_per_district["District"].tolist()[::-1]},  # Sorting reflected in plot (descending)
+        category_orders={"District": deals_per_district["District"].tolist()},  # Sorting reflected in plot
     )
     fig_deals.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_deals)
 
     # --- 💰 Total Cost of Deals per District ---
     st.subheader("💰 Total Cost of Deals per District")
-    cost_per_district = df_cost_filtered.groupby(["District", "Year"])["Total Cost"].sum().reset_index()
+    cost_per_district = df_cost_filtered.groupby(["District"])["Total Cost"].sum().reset_index()
     
-    # ✅ Sort districts by Total Cost in descending order
-    cost_per_district = cost_per_district.sort_values(by="Total Cost", ascending=True)
+    # ✅ Sort districts by total Total Cost in descending order
+    cost_per_district = cost_per_district.sort_values(by="Total Cost", ascending=False)
     
     fig_cost = px.bar(
-        cost_per_district, x="District", y="Total Cost", color="Year",
+        df_cost_filtered, x="District", y="Total Cost", color="Year",
         barmode="stack", title="Total Cost of Deals per District per Year",
-        category_orders={"District": cost_per_district["District"].tolist()[::-1]},  # Sorting reflected in plot (descending)
+        category_orders={"District": cost_per_district["District"].tolist()},  # Sorting reflected in plot
     )
     fig_cost.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_cost)
