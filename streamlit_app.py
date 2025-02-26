@@ -87,6 +87,7 @@ col1, col2 = st.columns(2)
             st.session_state['location_lng'] = map_data['last_clicked']['lng']
         
         st.write(f"الموقع المحدد: {st.session_state['location_lat']:.4f}, {st.session_state['location_lng']:.4f}")
+
 # Column 2: Input Form
 with col2:
     st.subheader("🏠 أدخل تفاصيل المنزل")
