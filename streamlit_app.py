@@ -58,7 +58,7 @@ st.title("🏠  لوحة المعلومات العقارية  ")
 # Create layout for the dashboard
 col1, col2 = st.columns(2)
 # Column 1: Map and Location Selection
-col1, col2 = st.columns([3, 1])  # Adjust layout if needed
+col1, col2 = st.columns([2, 1])  # Adjust layout if needed
 
 with col1:
     st.subheader("📍 اختر الموقع")
