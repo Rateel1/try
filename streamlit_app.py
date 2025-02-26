@@ -381,8 +381,10 @@ df_cost = load_total_cost_data()
 if df_deals is not None and df_cost is not None:
     st.title("🏡 Real Estate Market Dashboard")
 
+   
     # ✅ Sidebar Filters
-    selected_year = st.sidebar.selectbox("📅 Select Year", ["All"] + sorted(df_deals["Year"].unique()))
+    valid_years = [year for year in sorted(df_deals["Year"].unique()) if year in [2022, 2023, 2024]]
+    selected_year = st.sidebar.selectbox("📅 Select Year", ["All"] + valid_years)
     sort_by = st.sidebar.radio("📊 Sort By", ["Deal Count", "Total Cost"])
 
     # ✅ Filter Data Based on Selected Year
