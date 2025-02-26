@@ -50,11 +50,7 @@ def predict_price(new_record):
     new_record_df = new_record_df.reindex(columns=relevant_features, fill_value=0)
     return model.predict(new_record_df)[0]
 
-# Initialize session state for location
-if 'location_lat' not in st.session_state:
-    st.session_state['location_lat'] = 24.7136
-if 'location_lng' not in st.session_state:
-    st.session_state['location_lng'] = 46.6753
+
 
 # Main application
 st.title("🏠  لوحة المعلومات العقارية  ")
@@ -62,31 +58,40 @@ st.title("🏠  لوحة المعلومات العقارية  ")
 # Create layout for the dashboard
 col1, col2 = st.columns(2)
 # Column 1: Map and Location Selection
- with col1:
+col1, col2 = st.columns([3, 1])  # Adjust layout if needed
+
+with col1:
     st.subheader("📍 اختر الموقع")
-        
-     # Set default location to Riyadh, Saudi Arabia
-     riyadh_lat, riyadh_lng = 24.7136, 46.6753
-     if 'location_lat' not in st.session_state:
-          st.session_state['location_lat'] = riyadh_lat
-     if 'location_lng' not in st.session_state:
-         st.session_state['location_lng'] = riyadh_lng
-        
-        # Folium map restricted to Riyadh
-        m = folium.Map(location=[riyadh_lat, riyadh_lng], zoom_start=11, max_bounds=True)
-        marker = folium.Marker(
-            location=[st.session_state['location_lat'], st.session_state['location_lng']],
-            draggable=True
-        )
-        marker.add_to(m)
-        
-        map_data = st_folium(m, width=700, height=400)
-        
-        if map_data['last_clicked']:
-            st.session_state['location_lat'] = map_data['last_clicked']['lat']
-            st.session_state['location_lng'] = map_data['last_clicked']['lng']
-        
-        st.write(f"الموقع المحدد: {st.session_state['location_lat']:.4f}, {st.session_state['location_lng']:.4f}")
+    
+    # Set default location to Riyadh, Saudi Arabia
+    riyadh_lat, riyadh_lng = 24.7136, 46.6753
+    if 'location_lat' not in st.session_state:
+        st.session_state['location_lat'] = riyadh_lat
+    if 'location_lng' not in st.session_state:
+        st.session_state['location_lng'] = riyadh_lng
+    
+    # Folium map centered and restricted to Riyadh
+    m = folium.Map(
+        location=[riyadh_lat, riyadh_lng], 
+        zoom_start=11, 
+        max_bounds=True,
+        min_lat=24.4, max_lat=25.0,  # Approximate bounding box for Riyadh
+        min_lon=46.4, max_lon=47.0
+    )
+    
+    marker = folium.Marker(
+        location=[st.session_state['location_lat'], st.session_state['location_lng']],
+        draggable=True
+    )
+    marker.add_to(m)
+    
+    map_data = st_folium(m, width=700, height=400)
+    
+    if map_data['last_clicked']:
+        st.session_state['location_lat'] = map_data['last_clicked']['lat']
+        st.session_state['location_lng'] = map_data['last_clicked']['lng']
+    
+    st.write(f"الموقع المحدد: {st.session_state['location_lat']:.4f}, {st.session_state['location_lng']:.4f}")
 
 # Column 2: Input Form
 with col2:
