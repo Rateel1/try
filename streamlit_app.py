@@ -463,7 +463,7 @@ df_features = load_feature_importance_data()
 # --- 📊 Feature Importance Section ---
 if 'df_features' in locals() and df_features is not None:
     st.header("📊 Feature Importance Analysis")
-    st.dataframe(df_features)
+    
 
     # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
     fig_features = px.bar(
