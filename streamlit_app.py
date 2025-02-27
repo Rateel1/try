@@ -355,7 +355,7 @@ DEALS_FILES = {
     "2024": "selected2024_a.csv"
 }
 TOTAL_COST_FILE = "deals_total.csv"
-FEATURE_IMPORTANCE_FILE = "feature importance-.csv"
+FEATURE_IMPORTANCE_FILE = "feature importance.csv"
 
 # ✅ Load & Transform "Total Cost of Deals" CSV
 @st.cache_data
