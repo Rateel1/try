@@ -342,7 +342,6 @@ with col2:
 
 # Bottom section: Visualization
 st.header("📊 رؤى")
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -397,7 +396,6 @@ df_cost = load_total_cost_data()
 if df_deals is not None and df_cost is not None:
     st.title("🏡 Real Estate Market Dashboard")
 
-   
     # ✅ Sidebar Filters
     valid_years = [year for year in sorted(df_deals["Year"].unique()) if year in [2022, 2023, 2024]]
     selected_year = st.sidebar.selectbox("📅 Select Year", ["All"] + valid_years)
@@ -421,7 +419,7 @@ if df_deals is not None and df_cost is not None:
     fig_deals = px.bar(
         df_deals_filtered, x="District", y="Deal Count", color="Year",
         barmode="group", title="Number of Deals per District per Year",
-        category_orders={"District": deals_per_district["District"].tolist()},  # Sorting reflected in plot
+        category_orders={"District": deals_per_district["District"].tolist()}  # Sorting reflected in plot
     )
     fig_deals.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_deals)
@@ -436,7 +434,7 @@ if df_deals is not None and df_cost is not None:
     fig_cost = px.bar(
         df_cost_filtered, x="District", y="Total Cost", color="Year",
         barmode="stack", title="Total Cost of Deals per District per Year",
-        category_orders={"District": cost_per_district["District"].tolist()},  # Sorting reflected in plot
+        category_orders={"District": cost_per_district["District"].tolist()}  # Sorting reflected in plot
     )
     fig_cost.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_cost)
@@ -450,23 +448,20 @@ if df_deals is not None and df_cost is not None:
 
 else:
     st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
-import streamlit as st
-import pandas as pd
 
- # --- 📊 Feature Importance Section ---
-if df_features is not None:
-  st.header("📊 Feature Importance Analysis")
-  st.dataframe(df_features)
+# --- 📊 Feature Importance Section ---
+if 'df_features' in locals() and df_features is not None:
+    st.header("📊 Feature Importance Analysis")
+    st.dataframe(df_features)
 
-  # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
-      fig_features = px.bar(
-         df_features, x="Importance", y="Feature", orientation="h",
-         title="Feature Importance", color="Importance"
-        )
-        st.plotly_chart(fig_features)
-
+    # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
+    fig_features = px.bar(
+        df_features, x="Importance", y="Feature", orientation="h",
+        title="Feature Importance", color="Importance"
+    )
+    st.plotly_chart(fig_features)
 else:
-    st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
+    st.error("❌ Feature importance data not found!")
 
 # Footer
 st.markdown("---")
