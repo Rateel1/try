@@ -453,12 +453,6 @@ else:
 import streamlit as st
 import pandas as pd
 
-
-
-# Footer
-st.markdown("---")
-   
-
  # --- 📊 Feature Importance Section ---
 if df_features is not None:
   st.header("📊 Feature Importance Analysis")
