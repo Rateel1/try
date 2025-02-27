@@ -476,7 +476,3 @@ else:
 
 # Footer
 st.markdown("---")
-
-# Footer
-st.markdown("---")
-
