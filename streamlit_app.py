@@ -394,7 +394,7 @@ df_deals = load_deals_data()
 df_cost = load_total_cost_data()
 
 if df_deals is not None and df_cost is not None:
-    st.title("🏡 Real Estate Market Dashboard")
+   
 
     # ✅ Sidebar Filters
     valid_years = [year for year in sorted(df_deals["Year"].unique()) if year in [2022, 2023, 2024]]
@@ -439,16 +439,25 @@ if df_deals is not None and df_cost is not None:
     fig_cost.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_cost)
 
-    # --- 📋 Data Tables ---
-    st.subheader("📋 Detailed Deals Data")
-    st.dataframe(df_deals_filtered)
-
-    st.subheader("📋 Total Cost Data")
-    st.dataframe(df_cost_filtered)
-
 else:
     st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
 
+FEATURE_IMPORTANCE_FILE = "feature importance.csv"
+
+@st.cache_data
+def load_feature_importance_data():
+    if os.path.exists(FEATURE_IMPORTANCE_FILE):
+        try:
+            df = pd.read_csv(FEATURE_IMPORTANCE_FILEe)
+            return df
+        except Exception as e:
+            st.error(f"⚠️ Error reading {FEATURE_IMPORTANCE_FILE}: {e}")
+            return None
+    else:
+        st.warning(f"⚠️ Missing file: {FEATURE_IMPORTANCE_FILE}")
+        return None
+
+df_features = load_feature_importance_data()
 # --- 📊 Feature Importance Section ---
 if 'df_features' in locals() and df_features is not None:
     st.header("📊 Feature Importance Analysis")
