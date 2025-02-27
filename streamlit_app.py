@@ -342,20 +342,19 @@ with col2:
 
 # Bottom section: Visualization
 st.header("📊 رؤى")
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
 
-
-# ✅ File Paths for CSV Files
+# File paths for CSV files
 DEALS_FILES = {
     "2022": "selected2022_a.csv",
     "2023": "selected2023_a.csv",
     "2024": "selected2024_a.csv"
 }
 TOTAL_COST_FILE = "deals_total.csv"
-FEATURE_IMPORTANCE_FILE = "feature importance.csv"
 
 # ✅ Load & Transform "Total Cost of Deals" CSV
 @st.cache_data
@@ -391,37 +390,14 @@ def load_deals_data():
             st.warning(f"⚠️ Missing file: {file}")
     return pd.concat(dataframes, ignore_index=True) if dataframes else None
 
-# ✅ Load & Transform "Feature Importance" File
-@st.cache_data
-def load_feature_importance():
-    if os.path.exists(FEATURE_IMPORTANCE_FILE):
-        try:
-            if FEATURE_IMPORTANCE_FILE.endswith(".csv"):
-                df = pd.read_csv(FEATURE_IMPORTANCE_FILE)
-            else:
-                df = pd.read_excel(FEATURE_IMPORTANCE_FILE, engine="openpyxl")
-
-            # Ensure expected columns exist
-            if "Feature" not in df.columns or "Importance" not in df.columns:
-                st.error("⚠️ Feature Importance file must contain 'Feature' and 'Importance' columns.")
-                return None
-
-            return df.sort_values(by="Importance", ascending=False)  # Sort for better visualization
-
-        except Exception as e:
-            st.error(f"⚠️ Error reading {FEATURE_IMPORTANCE_FILE}: {e}")
-            return None
-    else:
-        st.warning(f"⚠️ Missing file: {FEATURE_IMPORTANCE_FILE}")
-        return None
-
 # ✅ Load Data
 df_deals = load_deals_data()
 df_cost = load_total_cost_data()
-df_features = load_feature_importance()
 
 if df_deals is not None and df_cost is not None:
-    
+    st.title("🏡 Real Estate Market Dashboard")
+
+   
     # ✅ Sidebar Filters
     valid_years = [year for year in sorted(df_deals["Year"].unique()) if year in [2022, 2023, 2024]]
     selected_year = st.sidebar.selectbox("📅 Select Year", ["All"] + valid_years)
@@ -438,25 +414,31 @@ if df_deals is not None and df_cost is not None:
     # --- 📊 Number of Deals per District ---
     st.subheader("📊 Number of Deals per District")
     deals_per_district = df_deals_filtered.groupby(["District"])["Deal Count"].sum().reset_index()
+    
+    # ✅ Sort districts by total Deal Count in descending order
     deals_per_district = deals_per_district.sort_values(by="Deal Count", ascending=False)
-
+    
     fig_deals = px.bar(
         df_deals_filtered, x="District", y="Deal Count", color="Year",
         barmode="group", title="Number of Deals per District per Year",
-        category_orders={"District": deals_per_district["District"].tolist()}
+        category_orders={"District": deals_per_district["District"].tolist()},  # Sorting reflected in plot
     )
+    fig_deals.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_deals)
 
     # --- 💰 Total Cost of Deals per District ---
     st.subheader("💰 Total Cost of Deals per District")
     cost_per_district = df_cost_filtered.groupby(["District"])["Total Cost"].sum().reset_index()
+    
+    # ✅ Sort districts by total Total Cost in descending order
     cost_per_district = cost_per_district.sort_values(by="Total Cost", ascending=False)
-
+    
     fig_cost = px.bar(
         df_cost_filtered, x="District", y="Total Cost", color="Year",
         barmode="stack", title="Total Cost of Deals per District per Year",
-        category_orders={"District": cost_per_district["District"].tolist()}
+        category_orders={"District": cost_per_district["District"].tolist()},  # Sorting reflected in plot
     )
+    fig_cost.update_layout(coloraxis_colorbar=dict(tickvals=[2022, 2023, 2024], ticktext=["2022", "2023", "2024"]))  # ✅ Only show 2022, 2023, 2024
     st.plotly_chart(fig_cost)
 
     # --- 📋 Data Tables ---
@@ -465,6 +447,17 @@ if df_deals is not None and df_cost is not None:
 
     st.subheader("📋 Total Cost Data")
     st.dataframe(df_cost_filtered)
+
+else:
+    st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
+import streamlit as st
+import pandas as pd
+
+
+
+# Footer
+st.markdown("---")
+   
 
     # --- 📊 Feature Importance Section ---
     if df_features is not None:
