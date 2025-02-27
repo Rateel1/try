@@ -410,7 +410,7 @@ if df_deals is not None and df_cost is not None:
         df_cost_filtered = df_cost
 
     # --- 📊 Number of Deals per District ---
-    st.subheader("📊 Number of Deals per District")
+    st.subheader("📊 عدد الصفقات حسب الحي")
     deals_per_district = df_deals_filtered.groupby(["District"])["Deal Count"].sum().reset_index()
     
     # ✅ Sort districts by total Deal Count in descending order
@@ -425,7 +425,7 @@ if df_deals is not None and df_cost is not None:
     st.plotly_chart(fig_deals)
 
     # --- 💰 Total Cost of Deals per District ---
-    st.subheader("💰 Total Cost of Deals per District")
+    st.subheader("💰 التكلفة الكلية للصفقات حسب الحي")
     cost_per_district = df_cost_filtered.groupby(["District"])["Total Cost"].sum().reset_index()
     
     # ✅ Sort districts by total Total Cost in descending order
@@ -462,7 +462,7 @@ df_features = load_feature_importance_data()
 
 # --- 📊 Feature Importance Section ---
 if 'df_features' in locals() and df_features is not None:
-    st.header("📊 Feature Importance Analysis")
+    st.header("تأثير الخصائص على السعر")
     
 
     # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
