@@ -459,15 +459,15 @@ import pandas as pd
 st.markdown("---")
    
 
-    # --- 📊 Feature Importance Section ---
-    if df_features is not None:
-        st.header("📊 Feature Importance Analysis")
-        st.dataframe(df_features)
+ # --- 📊 Feature Importance Section ---
+if df_features is not None:
+  st.header("📊 Feature Importance Analysis")
+  st.dataframe(df_features)
 
-        # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
-        fig_features = px.bar(
-            df_features, x="Importance", y="Feature", orientation="h",
-            title="Feature Importance", color="Importance"
+  # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
+      fig_features = px.bar(
+         df_features, x="Importance", y="Feature", orientation="h",
+         title="Feature Importance", color="Importance"
         )
         st.plotly_chart(fig_features)
 
