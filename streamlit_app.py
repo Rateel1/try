@@ -48,14 +48,14 @@ def load_model():
 
 model = load_model()
 
-# Layout with 3 columns
-col1, col2, col3 = st.columns([1, 1, 1])
+# Layout with 3 columns (adjusted proportions)
+col1, col2, col3 = st.columns([1.5, 1, 1])
 
 # First row
 with col1:
     st.subheader("📍 Select Location")
     m = folium.Map(location=[24.7136, 46.6753], zoom_start=11)
-    st_folium(m, width=400, height=300)
+    st_folium(m, width=500, height=400)
 
 with col2:
     st.subheader("🏠 Property Specification & Prediction")
@@ -85,7 +85,7 @@ with col3:
     else:
         st.warning("No data available.")
 
-# Second row
+# Second row with equal column widths
 col4, col5 = st.columns([1, 1])
 
 with col4:
