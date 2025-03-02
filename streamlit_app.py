@@ -344,6 +344,20 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
+# --- 📊 Feature Importance Section ---
+with col4
+if 'df_features' in locals() and df_features is not None:
+    st.subheader("تأثير الخصائص على السعر")
+    
+
+    # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
+    fig_features = px.bar(
+        df_features, x="Importance", y="Feature", orientation="h",
+        title="Feature Importance", color="Importance"
+    )
+    st.plotly_chart(fig_features)
+else:
+    st.error("❌ Feature importance data not found!")
 
 # File paths for CSV files
 DEALS_FILES = {
@@ -461,20 +475,6 @@ def load_feature_importance_data():
 
 df_features = load_feature_importance_data()
 
-# --- 📊 Feature Importance Section ---
-    with col4
-if 'df_features' in locals() and df_features is not None:
-    st.subheader("تأثير الخصائص على السعر")
-    
-
-    # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
-    fig_features = px.bar(
-        df_features, x="Importance", y="Feature", orientation="h",
-        title="Feature Importance", color="Importance"
-    )
-    st.plotly_chart(fig_features)
-else:
-    st.error("❌ Feature importance data not found!")
 
 # Footer
 st.markdown("---")
