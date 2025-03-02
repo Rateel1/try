@@ -439,7 +439,7 @@ with col5:
     st.plotly_chart(fig_deals)
 
     # --- 💰 Total Cost of Deals per District ---
- with col6:
+with col6:
     st.subheader("💰 التكلفة الكلية للصفقات")
     cost_per_district = df_cost_filtered.groupby(["District"])["Total Cost"].sum().reset_index()
     
