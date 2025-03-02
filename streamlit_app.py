@@ -357,7 +357,7 @@ with col4:
         title="Feature Importance", color="Importance"
     )
     st.plotly_chart(fig_features)
-else:
+ else:
     st.error("❌ Feature importance data not found!")
 
 # File paths for CSV files
