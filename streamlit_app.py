@@ -423,8 +423,7 @@ if df_deals is not None and df_cost is not None:
         df_cost_filtered = df_cost
 
     # --- 📊 Number of Deals per District ---
-    
- with col5:
+with col5:
     st.subheader("📊 عدد الصفقات حسب الحي")
     deals_per_district = df_deals_filtered.groupby(["District"])["Deal Count"].sum().reset_index()
     
