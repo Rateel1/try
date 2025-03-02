@@ -1,15 +1,10 @@
-#last update
 import streamlit as st
 import joblib
 import pandas as pd
 import plotly.express as px
-
 import folium
 from streamlit_folium import st_folium
 from PIL import Image
-
-# Set up the page configuration
-st.set_page_config(page_title="لوحة المعلومات العقارية ", layout="wide", initial_sidebar_state="collapsed")
 
 # Custom CSS for styling
 st.markdown("""
@@ -54,89 +49,59 @@ def predict_price(new_record):
 
 
 # Main application
-st.title("🏠  لوحة المعلومات العقارية  ")
+
+
+# Set up the page configuration
+st.set_page_config(page_title="لوحة المعلومات العقارية ", layout="wide", initial_sidebar_state="collapsed")
+
+# Load the trained model
+@st.cache_resource
+def load_model():
+    return joblib.load("lgbm.joblib")
+
+model = load_model()
+
+# Layout with 3 columns and 2 rows
+st.title("🏠 لوحة المعلومات العقارية ")
 
 # First Row: Map, Specification & Prediction
-
-col1, col2 ,col3 = st.columns([1, 2, 1])
-
+col1, col2 = st.columns([1, 2])
 
 with col1:
     st.subheader("📍 اختر الموقع")
-    
-    # Set default location to Riyadh, Saudi Arabia
     riyadh_lat, riyadh_lng = 24.7136, 46.6753
-    if 'location_lat' not in st.session_state:
-        st.session_state['location_lat'] = riyadh_lat
-    if 'location_lng' not in st.session_state:
-        st.session_state['location_lng'] = riyadh_lng
-    
-    # Folium map centered and restricted to Riyadh
-    m = folium.Map(
-        location=[riyadh_lat, riyadh_lng], 
-        zoom_start=11, 
-        max_bounds=True,
-        min_lat=24.4, max_lat=25.0,  # Approximate bounding box for Riyadh
-        min_lon=46.4, max_lon=47.0
-    )
-    
-    marker = folium.Marker(
-        location=[st.session_state['location_lat'], st.session_state['location_lng']],
-        draggable=True
-    )
-    marker.add_to(m)
-    
-    map_data = st_folium(m, width=700, height=400)
-    
-    if map_data['last_clicked']:
-        st.session_state['location_lat'] = map_data['last_clicked']['lat']
-        st.session_state['location_lng'] = map_data['last_clicked']['lng']
-    
-    st.write(f"الموقع المحدد: {st.session_state['location_lat']:.4f}, {st.session_state['location_lng']:.4f}")
+    m = folium.Map(location=[riyadh_lat, riyadh_lng], zoom_start=11)
+    st_folium(m, width=500, height=400)
+
 
 # Column 2: Input Form
 with col2:
-    st.subheader("🏠  أدخل تفاصيل المنزل لتقدير قيمته السوقية")
-   
+    st.subheader("🏠 أدخل تفاصيل المنزل لتقدير قيمته السوقية")
+
     # Create a form for house details
     with st.form("house_details_form"):
-        # Create uniform input fields
         col_a, col_b = st.columns(2)
         with col_a:
             beds = st.slider("عدد غرف النوم 🛏️", 3, 7, 3)
             livings = st.slider("عدد غرف المعيشة 🛋️", 1, 7, 1)
-            wc = st.slider(" عدد دورات المياه 🚽", 2, 5, 2)
+            wc = st.slider("عدد دورات المياه 🚽", 2, 5, 2)
             area = st.number_input("المساحة (متر مربع) 📏", 150.0, 12000.0, 150.0)
+
         with col_b:
-            # Replace the existing street_width input with a selectbox
-            street_width = st.selectbox("عرض الشارع (متر) 🛣️", [10, 12, 15, 18, 20, 25], index=2)  # Default to 20
-
-
-            age = st.number_input(" عمر العقار 🗓️", 0, 36, 5)
-            street_direction = st.selectbox(" نوع الواجهة 🧭", [
-    " واجهة شمالية",
-    " واجهة شرقية",
-    " واجهة غربية",
-    " واجهة جنوبية",
-    " واجهة شمالية شرقية",
-    " واجهة جنوبية شرقية",
-    " واجهة جنوبية غربية",
-    " واجهة شمالية غربية",
-    " الفلة تقع على ثلاثة شوارع",
-    " الفلة تقع على أربعة شوارع"
-])
-
-
-
+            street_width = st.selectbox("عرض الشارع (متر) 🛣️", [10, 12, 15, 18, 20, 25], index=2)
+            age = st.number_input("عمر العقار 🗓️", 0, 36, 5)
+            street_direction = st.selectbox("نوع الواجهة 🧭", [
+                "واجهة شمالية", "واجهة شرقية", "واجهة غربية", "واجهة جنوبية",
+                "واجهة شمالية شرقية", "واجهة جنوبية شرقية", "واجهة جنوبية غربية", "واجهة شمالية غربية",
+                "الفلة تقع على ثلاثة شوارع", "الفلة تقع على أربعة شوارع"
+            ])
             ketchen = st.selectbox("وجود المطبخ 🍳", [0, 1], format_func=lambda x: "نعم" if x == 1 else "لا")
             furnished = st.selectbox("الفلة مؤثثة 🪑", [0, 1], format_func=lambda x: "نعم" if x == 1 else "لا")
 
         # District selection
-        city_name_to_id = {
-                        'الرياض': 66        }
+        city_name_to_id = {'الرياض': 66}
         district_data = [
- 
-    (470, 'حي السويدي', 'الرياض'),
+           (470, 'حي السويدي', 'الرياض'),
     (692, 'حي عتيقة', 'الرياض'),
         (474, 'حي الشرفية', 'الرياض'),
         (606, 'حي النسيم الغربي', 'الرياض'),
@@ -305,26 +270,20 @@ with col2:
        (664, 'حي حطين', 'الرياض'),
    
     (414, 'حي الحزم', 'الرياض'),
-]
-        
-        selected_district = st.selectbox(
-            "اختر الحي 🏙️",
-            district_data,
-            format_func=lambda x: f"{x[1]} ({x[2]})"
-        )
+        ]
+
+        selected_district = st.selectbox("اختر الحي 🏙️", district_data, format_func=lambda x: f"{x[1]} ({x[2]})")
         district_id = selected_district[0]
         city_id = city_name_to_id[selected_district[2]]
 
-with col3:
- # Submit button
-        submitted = st.form_submit_button("🔮حساب القيمة التقديرية")
+        # ✅ Submit button inside the form
+        submitted = st.form_submit_button("🔮 حساب القيمة التقديرية")
+
         if submitted:
             with st.spinner('جاري الحساب...'):
                 new_record = {
                     'beds': beds, 'livings': livings, 'wc': wc, 'area': area,
-                    'street_width': street_width,  # Updated to be a list
-
-                    'age': age, 'street_direction': street_direction,
+                    'street_width': street_width, 'age': age, 'street_direction': street_direction,
                     'ketchen': ketchen, 'furnished': furnished,
                     'location.lat': st.session_state['location_lat'],
                     'location.lng': st.session_state['location_lng'],
@@ -332,21 +291,18 @@ with col3:
                 }
                 predicted_price = predict_price(new_record)
             st.success('تمت عملية التوقع بنجاح!')
-            st.metric(label=" السعر التقريبي ", value=f"ريال {predicted_price:,.2f}")
-            
-
-
+            st.metric(label="السعر التقريبي", value=f"ريال {predicted_price:,.2f}")
 # Bottom section: Visualization
 st.header("📊 رؤى")
 # Second Row: Feature Importance, Deals Count, Deals Cost
-col4, col5, col6 = st.columns([1, 1, 1])
+col3, col4, col5 = st.columns([1, 1, 1])
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
 
 # --- 📊 Feature Importance Section ---
-with col4:
+with col3:
  if 'df_features' in locals() and df_features is not None:
     st.subheader("تأثير الخصائص على السعر")
     
@@ -423,7 +379,7 @@ if df_deals is not None and df_cost is not None:
         df_cost_filtered = df_cost
 
     # --- 📊 Number of Deals per District ---
-with col5:
+with col4:
     st.subheader("📊 عدد الصفقات حسب الحي")
     deals_per_district = df_deals_filtered.groupby(["District"])["Deal Count"].sum().reset_index()
     
@@ -439,7 +395,7 @@ with col5:
     st.plotly_chart(fig_deals)
 
    # --- 💰 Total Cost of Deals per District ---
-with col6:
+with col5:
     st.subheader("💰 التكلفة الكلية للصفقات")
 
     if df_cost_filtered is not None:
@@ -480,3 +436,4 @@ df_features = load_feature_importance_data()
 
 # Footer
 st.markdown("---")
+
