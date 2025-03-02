@@ -344,9 +344,10 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
+
 # --- 📊 Feature Importance Section ---
 with col4:
-if 'df_features' in locals() and df_features is not None:
+ if 'df_features' in locals() and df_features is not None:
     st.subheader("تأثير الخصائص على السعر")
     
 
