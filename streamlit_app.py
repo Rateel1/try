@@ -62,7 +62,7 @@ def load_model():
 model = load_model()
 
 # Layout with 3 columns and 2 rows
-st.title("🏠 لوحة المعلومات العقارية ")
+
 
 # First Row: Map, Specification & Prediction
 col1, col2 = st.columns([1, 2])
