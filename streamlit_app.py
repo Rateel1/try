@@ -424,7 +424,7 @@ if df_deals is not None and df_cost is not None:
 
     # --- 📊 Number of Deals per District ---
     
-    with col5:
+ with col5:
     st.subheader("📊 عدد الصفقات حسب الحي")
     deals_per_district = df_deals_filtered.groupby(["District"])["Deal Count"].sum().reset_index()
     
@@ -440,7 +440,7 @@ if df_deals is not None and df_cost is not None:
     st.plotly_chart(fig_deals)
 
     # --- 💰 Total Cost of Deals per District ---
-    with col6:
+ with col6:
     st.subheader("💰 التكلفة الكلية للصفقات")
     cost_per_district = df_cost_filtered.groupby(["District"])["Total Cost"].sum().reset_index()
     
