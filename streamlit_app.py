@@ -56,10 +56,10 @@ def predict_price(new_record):
 # Main application
 st.title("🏠  لوحة المعلومات العقارية  ")
 
-# Create layout for the dashboard
-col1, col2 = st.columns(2)
-# Column 1: Map and Location Selection
-col1, col2 = st.columns([1, 2])  # Adjust layout if needed
+# First Row: Map, Specification & Prediction
+
+col1, col2 ,col3 = st.columns([1, 2, 1])
+
 
 with col1:
     st.subheader("📍 اختر الموقع")
@@ -96,16 +96,8 @@ with col1:
 
 # Column 2: Input Form
 with col2:
-    st.subheader("🏠 أدخل تفاصيل المنزل")
-    # Manual location input
-   # st.subheader("📍 إدخال الموقع يدويًا")
-     # manual_lat = st.number_input("أدخل خط العرض:", value=st.session_state['location_lat'], format="%.6f")
-   # manual_lng = st.number_input("أدخل خط الطول:", value=st.session_state['location_lng'], format="%.6f")
-   # if manual_lat and manual_lng:
-        #st.session_state['location_lat'] = manual_lat
-        #st.session_state['location_lng'] = manual_lng
-        #st.write(f"الموقع المدخل يدويًا: {manual_lat:.4f}, {manual_lng:.4f}")
-
+    st.subheader("🏠  أدخل تفاصيل المنزل لتقدير قيمته السوقية")
+   
     # Create a form for house details
     with st.form("house_details_form"):
         # Create uniform input fields
@@ -323,8 +315,9 @@ with col2:
         district_id = selected_district[0]
         city_id = city_name_to_id[selected_district[2]]
 
-        # Submit button
-        submitted = st.form_submit_button("🔮 توقع السعر")
+      with col3:
+ # Submit button
+        submitted = st.form_submit_button("🔮حساب القيمة التقديرية")
         if submitted:
             with st.spinner('جاري الحساب...'):
                 new_record = {
@@ -340,9 +333,13 @@ with col2:
                 predicted_price = predict_price(new_record)
             st.success('تمت عملية التوقع بنجاح!')
             st.metric(label=" السعر التقريبي ", value=f"ريال {predicted_price:,.2f}")
+            
+
 
 # Bottom section: Visualization
 st.header("📊 رؤى")
+# Second Row: Feature Importance, Deals Count, Deals Cost
+col4, col5, col6 = st.columns([1, 1, 1])
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -411,6 +408,8 @@ if df_deals is not None and df_cost is not None:
         df_cost_filtered = df_cost
 
     # --- 📊 Number of Deals per District ---
+    
+    with col5:
     st.subheader("📊 عدد الصفقات حسب الحي")
     deals_per_district = df_deals_filtered.groupby(["District"])["Deal Count"].sum().reset_index()
     
@@ -426,7 +425,8 @@ if df_deals is not None and df_cost is not None:
     st.plotly_chart(fig_deals)
 
     # --- 💰 Total Cost of Deals per District ---
-    st.subheader("💰 التكلفة الكلية للصفقات حسب الحي")
+    with col6:
+    st.subheader("💰 التكلفة الكلية للصفقات")
     cost_per_district = df_cost_filtered.groupby(["District"])["Total Cost"].sum().reset_index()
     
     # ✅ Sort districts by total Total Cost in descending order
@@ -462,8 +462,9 @@ def load_feature_importance_data():
 df_features = load_feature_importance_data()
 
 # --- 📊 Feature Importance Section ---
+    with col4
 if 'df_features' in locals() and df_features is not None:
-    st.header("تأثير الخصائص على السعر")
+    st.subheader("تأثير الخصائص على السعر")
     
 
     # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
