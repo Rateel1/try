@@ -315,7 +315,7 @@ with col2:
         district_id = selected_district[0]
         city_id = city_name_to_id[selected_district[2]]
 
-      with col3:
+with col3:
  # Submit button
         submitted = st.form_submit_button("🔮حساب القيمة التقديرية")
         if submitted:
