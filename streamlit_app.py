@@ -319,7 +319,7 @@ import streamlit as st
 import plotly.express as px
 
 # --- 📊 Feature Importance Section ---
-FEATURE_IMPORTANCE_FILE = "feature_importance.csv"  # Ensure file name matches your actual file
+FEATURE_IMPORTANCE_FILE = "feature importance.csv"  # Ensure file name matches your actual file
 
 @st.cache_data
 def load_feature_importance_data():
