@@ -51,19 +51,6 @@ def predict_price(new_record):
 
 
 
-# Main application
-
-
-# Set up the page configuration
-st.set_page_config(page_title="لوحة المعلومات العقارية ", layout="wide", initial_sidebar_state="collapsed")
-
-# Load the trained model
-@st.cache_resource
-def load_model():
-    return joblib.load("lgbm.joblib")
-
-model = load_model()
-
 # Layout with 3 columns and 2 rows
 
 
@@ -439,5 +426,3 @@ df_features = load_feature_importance_data()
 
 # Footer
 st.markdown("---")
-
-
