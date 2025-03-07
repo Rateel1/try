@@ -321,18 +321,44 @@ import os
 
 # --- 📊 Feature Importance Section ---
 with col3:
- if 'df_features' in locals() and df_features is not None:
-    st.subheader("تأثير الخصائص على السعر")
-    
+ FEATURE_IMPORTANCE_FILE = "feature importance.csv"
 
-    # ✅ Plot feature importance (assuming it has 'Feature' and 'Importance' columns)
-    fig_features = px.bar(
-        df_features, x="Importance", y="Feature", orientation="h",
-        title="Feature Importance", color="Importance"
-    )
-    st.plotly_chart(fig_features)
- else:
-    st.error("❌ Feature importance data not found!")
+@st.cache_data
+def load_feature_importance_data():
+    """Loads feature importance data from CSV."""
+    if os.path.exists(FEATURE_IMPORTANCE_FILE):
+        try:
+            df = pd.read_csv(FEATURE_IMPORTANCE_FILE)
+
+            # ✅ Check column names to avoid KeyError
+            expected_columns = {"Feature", "Importance"}
+            if not expected_columns.issubset(df.columns):
+                st.error(f"⚠️ CSV file is missing required columns: {expected_columns - set(df.columns)}")
+                return None
+
+            return df
+        except Exception as e:
+            st.error(f"⚠️ Error reading {FEATURE_IMPORTANCE_FILE}: {e}")
+            return None
+    else:
+        st.error(f"⚠️ Missing file: {FEATURE_IMPORTANCE_FILE}")
+        return None
+
+df_features = load_feature_importance_data()
+
+# --- 📊 Feature Importance Section ---
+with st.container():  # Ensures it's in a proper Streamlit layout
+    if df_features is not None:
+        st.subheader("تأثير الخصائص على السعر")
+
+        # ✅ Plot feature importance (assuming correct columns exist)
+        fig_features = px.bar(
+            df_features, x="Importance", y="Feature", orientation="h",
+            title="Feature Importance", color="Importance"
+        )
+        st.plotly_chart(fig_features)
+    else:
+        st.error("❌ Feature importance data not found!")
 
 # File paths for CSV files
 DEALS_FILES = {
