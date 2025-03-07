@@ -346,7 +346,6 @@ df_features = load_feature_importance_data()
 # --- 📊 Feature Importance Section ---
 with col3:
    
-with st.container():  # Ensures it's in a proper Streamlit layout
     if df_features is not None:
         st.subheader("تأثير الخصائص على السعر")
 
