@@ -460,23 +460,6 @@ with col5:
         st.error("❌ Data files not found! Please ensure the files are correctly stored in the predefined locations.")
 
 
-FEATURE_IMPORTANCE_FILE = "feature importance.csv"
-
-@st.cache_data
-def load_feature_importance_data():
-    if os.path.exists(FEATURE_IMPORTANCE_FILE):
-        try:
-            df = pd.read_csv(FEATURE_IMPORTANCE_FILE)  # Fixed typo here
-            return df
-        except Exception as e:
-            st.error(f"⚠️ Error reading {FEATURE_IMPORTANCE_FILE}: {e}")
-            return None
-    else:
-        st.warning(f"⚠️ Missing file: {FEATURE_IMPORTANCE_FILE}")
-        return None
-
-df_features = load_feature_importance_data()
-
 
 # Footer
 st.markdown("---")
