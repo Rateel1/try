@@ -346,7 +346,7 @@ def load_feature_importance_data():
 df_features = load_feature_importance_data()
 
 # --- 📊 Feature Importance Section ---
-col1, col2, col3 = st.columns([1, 1, 2])  # Ensure `col3` exists
+col1, col2, col3 = st.columns([1, 1, 1])  # Ensure `col3` exists
 
 with col3:
     if df_features is not None:
