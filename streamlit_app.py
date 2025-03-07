@@ -313,41 +313,45 @@ with col2:
 # Bottom section: Visualization
 st.header("📊 رؤى")
 # Second Row: Feature Importance, Deals Count, Deals Cost
-col3, col4, col5 = st.columns([1, 1, 1])
 
+import os
+import pandas as pd
+import streamlit as st
+import plotly.express as px
 
 # --- 📊 Feature Importance Section ---
-
-FEATURE_IMPORTANCE_FILE = "feature importance.csv"
+FEATURE_IMPORTANCE_FILE = "feature_importance.csv"  # Ensure file name matches your actual file
 
 @st.cache_data
 def load_feature_importance_data():
     """Loads feature importance data from CSV."""
-    if os.path.exists(FEATURE_IMPORTANCE_FILE):
-        try:
-            df = pd.read_csv(FEATURE_IMPORTANCE_FILE)
-
-            # ✅ Check column names to avoid KeyError
-            expected_columns = {"Feature", "Importance"}
-            if not expected_columns.issubset(df.columns):
-                st.error(f"⚠️ CSV file is missing required columns: {expected_columns - set(df.columns)}")
-                return None
-
-            return df
-        except Exception as e:
-            st.error(f"⚠️ Error reading {FEATURE_IMPORTANCE_FILE}: {e}")
-            return None
-    else:
+    if not os.path.exists(FEATURE_IMPORTANCE_FILE):
         st.error(f"⚠️ Missing file: {FEATURE_IMPORTANCE_FILE}")
+        return None
+
+    try:
+        df = pd.read_csv(FEATURE_IMPORTANCE_FILE)
+
+        # ✅ Check column names to avoid KeyError
+        expected_columns = {"Feature", "Importance"}
+        if not expected_columns.issubset(df.columns):
+            missing_cols = expected_columns - set(df.columns)
+            st.error(f"⚠️ CSV file is missing required columns: {missing_cols}")
+            return None
+
+        return df
+    except Exception as e:
+        st.error(f"⚠️ Error reading {FEATURE_IMPORTANCE_FILE}: {e}")
         return None
 
 df_features = load_feature_importance_data()
 
 # --- 📊 Feature Importance Section ---
+col1, col2, col3 = st.columns([1, 1, 2])  # Ensure `col3` exists
+
 with col3:
-   
     if df_features is not None:
-        st.subheader("تأثير الخصائص على السعر")
+        st.subheader("📊 تأثير الخصائص على السعر")
 
         # ✅ Plot feature importance (assuming correct columns exist)
         fig_features = px.bar(
@@ -357,6 +361,7 @@ with col3:
         st.plotly_chart(fig_features)
     else:
         st.error("❌ Feature importance data not found!")
+
 
 # File paths for CSV files
 DEALS_FILES = {
