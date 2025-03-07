@@ -6,6 +6,9 @@ import folium
 from streamlit_folium import st_folium
 from PIL import Image
 
+
+st.set_page_config(page_title="لوحة المعلومات العقارية ", layout="wide", initial_sidebar_state="collapsed")
+
 # Custom CSS for styling
 st.markdown("""
 <style>
@@ -436,4 +439,5 @@ df_features = load_feature_importance_data()
 
 # Footer
 st.markdown("---")
+
 
