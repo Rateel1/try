@@ -318,7 +318,7 @@ col3, col4, col5 = st.columns([1, 1, 1])
 
 # --- 📊 Feature Importance Section ---
 
- FEATURE_IMPORTANCE_FILE = "feature importance.csv"
+FEATURE_IMPORTANCE_FILE = "feature importance.csv"
 
 @st.cache_data
 def load_feature_importance_data():
