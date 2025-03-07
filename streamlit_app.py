@@ -313,7 +313,6 @@ with col2:
 # Bottom section: Visualization
 st.header("📊 رؤى")
 # Second Row: Feature Importance, Deals Count, Deals Cost
-
 import os
 import pandas as pd
 import streamlit as st
@@ -361,6 +360,7 @@ with col3:
         st.plotly_chart(fig_features)
     else:
         st.error("❌ Feature importance data not found!")
+
 
 
 # File paths for CSV files
