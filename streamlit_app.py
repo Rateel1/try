@@ -314,13 +314,10 @@ with col2:
 st.header("📊 رؤى")
 # Second Row: Feature Importance, Deals Count, Deals Cost
 col3, col4, col5 = st.columns([1, 1, 1])
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-import os
+
 
 # --- 📊 Feature Importance Section ---
-with col3:
+
  FEATURE_IMPORTANCE_FILE = "feature importance.csv"
 
 @st.cache_data
@@ -347,6 +344,8 @@ def load_feature_importance_data():
 df_features = load_feature_importance_data()
 
 # --- 📊 Feature Importance Section ---
+with col3:
+   
 with st.container():  # Ensures it's in a proper Streamlit layout
     if df_features is not None:
         st.subheader("تأثير الخصائص على السعر")
